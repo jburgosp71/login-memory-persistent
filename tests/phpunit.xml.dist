@@ -3,11 +3,11 @@
 <phpunit
          backupGlobals="false"
          colors="true"
-         bootstrap="./vendor/autoload.php">
+         bootstrap="../vendor/autoload.php">
 
     <testsuites>
-        <testsuite name="Test Suite">
-            <directory>./tests</directory>
+        <testsuite name="Test Login">
+            <directory>./src/Login</directory>
         </testsuite>
     </testsuites>
 

@@ -1,0 +1,11 @@
+{
+  "name" : "login-memory-persistent",
+  "autoload": {
+    "psr-4": {
+      "LoginMemoryPersistent\\": ["src/Login/"]
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  }
+}
