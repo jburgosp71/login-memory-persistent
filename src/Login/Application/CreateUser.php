@@ -1,41 +1,35 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wallaxe
- * Date: 21/08/2019
- * Time: 19:05
- */
 
 namespace LoginMemoryPersistent\Application;
 
 use LoginMemoryPersistent\Domain\Entity\User;
+use LoginMemoryPersistent\Domain\Repository\UserSaveRepositoryInterface;
 use LoginMemoryPersistent\Domain\ValueObject\Password;
 use LoginMemoryPersistent\Domain\ValueObject\Username;
-use LoginMemoryPersistent\Infraestructure\Persistence\Memory\UserRepository;
 
 class CreateUser
 {
-    protected $userRepository;
+    protected $userSaveRepository;
 
     /**
      * CreateUser constructor.
-     * @param $userRepository
+     * @param UserSaveRepositoryInterface $userSaveRepository
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserSaveRepositoryInterface $userSaveRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->userSaveRepository = $userSaveRepository;
     }
 
     /**
-     * @param $user
-     * @param $password
+     * @param String $user
+     * @param String $password
      * @return bool
      */
-    public function addUser($user, $password) {
+    public function addUser(String $user, String $password) : bool
+    {
         $userEntity = new User(new Username($user), new Password($password));
-        $this->userRepository->save($userEntity);
+        $this->userSaveRepository->save($userEntity);
 
         return true;
     }
-
 }

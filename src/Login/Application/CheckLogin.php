@@ -3,36 +3,44 @@
 namespace LoginMemoryPersistent\Application;
 
 use LoginMemoryPersistent\Domain\Entity\User;
-use LoginMemoryPersistent\Infraestructure\Persistence\Memory\UserRepository;
+use LoginMemoryPersistent\Domain\Exceptions\ErrorLoginException;
+use LoginMemoryPersistent\Domain\Exceptions\UnavailableUserException;
+use LoginMemoryPersistent\Domain\Repository\UserSearchRepositoryInterface;
 
 class CheckLogin
 {
-    protected $userRepository;
-    protected $findUserUseCase;
+    protected $userSearchRepository;
 
     /**
      * CheckLogin constructor.
-     * @param $userRepository
+     * @param UserSearchRepositoryInterface $userSearchRepository
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserSearchRepositoryInterface $userSearchRepository)
     {
-        $this->userRepository = $userRepository;
-        $this->findUserUseCase = new FindUser($userRepository);
+        $this->userSearchRepository = $userSearchRepository;
     }
 
     /**
-     * @param $username
-     * @param $password
-     * @return mixed
+     * @param String $username
+     * @param String $password
+     * @return bool
+     * @throws ErrorLoginException
+     * @throws UnavailableUserException
      */
-    public function isValidLogin($username, $password)
+    public function tryLogin(String $username, String $password) : bool
     {
-        $userEntity = $this->findUserUseCase->getUserEntity($username);
-
-        if ($userEntity instanceof User) {
-            $passwordValueObject = $userEntity->getPassword();
-            return $passwordValueObject->isCorrectPassword($password);
+        $user = $this->userSearchRepository->findByUsername($username);
+        if (!$user instanceof User) {
+            throw new UnavailableUserException();
         }
 
+        $passwordHashed = $user->getPassword();
+
+        if (!password_verify($password, $passwordHashed))
+        {
+            throw new ErrorLoginException();
+        }
+
+        return true;
     }
 }

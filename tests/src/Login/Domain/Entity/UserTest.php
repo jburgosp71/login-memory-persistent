@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\LoginMemoryPersistent\Domain\Entity;
+namespace TestsLoginMemoryPersistent\Domain\Entity;
 
 use LoginMemoryPersistent\Domain\Entity\User;
 use LoginMemoryPersistent\Domain\ValueObject\Password;
 use LoginMemoryPersistent\Domain\ValueObject\Username;
 
-class UserEntityTest extends \PHPUnit_Framework_TestCase
+class UserTest extends \PHPUnit_Framework_TestCase
 {
     public function testUserEntity()
     {
@@ -15,8 +15,7 @@ class UserEntityTest extends \PHPUnit_Framework_TestCase
 
         $user = new User($username, $password);
 
-        $this->assertEquals($username, $user->getUsername());
-        $this->assertEquals($password, $user->getPassword());
-        $this->assertTrue($password->equals($user->getPassword()));
+        $this->assertEquals($username->__toString(), $user->getUsername());
+        $this->assertEquals($password->__toString(), $user->getPassword());
     }
 }

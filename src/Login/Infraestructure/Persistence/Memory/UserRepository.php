@@ -4,9 +4,10 @@ namespace LoginMemoryPersistent\Infraestructure\Persistence\Memory;
 
 use LoginMemoryPersistent\Domain\Entity\User;
 use LoginMemoryPersistent\Domain\Exceptions\DuplicatedUserException;
-use LoginMemoryPersistent\Domain\Exceptions\UnavailableUserException;
 use LoginMemoryPersistent\Domain\Repository\UserSaveRepositoryInterface;
 use LoginMemoryPersistent\Domain\Repository\UserSearchRepositoryInterface;
+use LoginMemoryPersistent\Domain\ValueObject\Password;
+use LoginMemoryPersistent\Domain\ValueObject\Username;
 
 class UserRepository implements UserSaveRepositoryInterface, UserSearchRepositoryInterface
 {
@@ -17,45 +18,36 @@ class UserRepository implements UserSaveRepositoryInterface, UserSearchRepositor
      */
     public function __construct()
     {
-        $this->userArray = array();
+        $this->userArray = [];
     }
-
+    
     /**
      * @param User $user
      * @throws DuplicatedUserException
      */
     public function save(User $user)
     {
-        try {
-            if ($this->findByUserName($user->getUsername()) instanceof User) {
-                throw new DuplicatedUserException();
-            }
-        } catch (UnavailableUserException $e) {
-            $this->userArray[] = $user;
+
+        if ($this->findByUsername($user->getUsername()) instanceof User) {
+            throw new DuplicatedUserException();
         }
+
+        $this->userArray[$user->getUsername()] = $user->getPassword();
     }
 
     /**
-     * @return array
+     * @param String $username
+     * @return mixed|null
      */
-    public function findAll()
+    public function findByUsername(String $username)
     {
-        return $this->userArray;
-    }
-
-    /**
-     * @param $username
-     * @return mixed
-     * @throws UnavailableUserException
-     */
-    public function findByUserName($username)
-    {
-        foreach ($this->userArray as $user) {
-            if ($username == $user->getUsername()) {
-                return $user;
-            }
+        if(isset($this->userArray[$username])) {
+            $usernameValue = new Username($username);
+            $passwordValue = new Password($this->userArray[$username]);
+            return new User($usernameValue, $passwordValue);
         }
 
-        throw new UnavailableUserException();
+        return null;
     }
+
 }

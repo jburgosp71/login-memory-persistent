@@ -26,13 +26,13 @@ class User
      */
     public function getUsername()
     {
-        return $this->username;
+        return $this->username->__toString();
     }
 
     /**
-     * @param mixed $username
+     * @param Username $username
      */
-    public function setUsername($username)
+    public function setUsername(Username $username) : void
     {
         $this->username = $username;
     }
@@ -42,17 +42,14 @@ class User
      */
     public function getPassword()
     {
-        return $this->password;
+        return $this->password->__toString();
     }
 
     /**
-     * @param mixed $password
+     * @param Password $password
      */
-    public function setPassword($password)
+    public function setPassword(Password $password) : void
     {
         $this->password = $password;
     }
-
-
-
 }

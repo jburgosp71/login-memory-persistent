@@ -2,8 +2,7 @@
 
 namespace LoginMemoryPersistent\Domain\Exceptions;
 
-
-class DuplicatedUserException extends \Exception
+class ErrorLoginException extends \Exception
 {
 
 }

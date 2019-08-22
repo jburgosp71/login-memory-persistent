@@ -7,22 +7,34 @@ class Password
     protected $hashedPassword;
 
     /**
-     * Password constructor.
-     * @param $password
+     * @var String
      */
-    public function __construct($password)
+    private $password;
+
+    /**
+     * Password constructor.
+     * @param String $password
+     */
+    public function __construct(String $password)
     {
         $this->hashedPassword = $this->hashPassword($password);
+        $this->password = $password;
     }
 
-    private function hashPassword($password) {
+    /**
+     * @param String $password
+     * @return bool|string
+     */
+    private function hashPassword(String $password) : String
+    {
         return password_hash($password,  PASSWORD_DEFAULT);
     }
 
     /**
-     * @return boolean
+     * @param String $password
+     * @return bool
      */
-    public function isCorrectPassword($password)
+    public function isCorrectPassword(String $password) : bool
     {
         return password_verify($password, $this->getHashedPassword());
     }
@@ -30,17 +42,24 @@ class Password
     /**
      * @return string
      */
-    private function getHashedPassword()
+    private function getHashedPassword() : String
     {
         return $this->hashedPassword;
     }
 
-    public function equals(Password $password)
+    /**
+     * @param Password $password
+     * @return bool
+     */
+    public function equals(Password $password) : bool
     {
         return $this === $password;
     }
 
-    public function __toString()
+    /**
+     * @return String
+     */
+    public function __toString() : String
     {
         return $this->hashedPassword;
     }

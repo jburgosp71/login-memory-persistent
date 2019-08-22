@@ -5,6 +5,11 @@
       "LoginMemoryPersistent\\": ["src/Login/"]
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "TestsLoginMemoryPersistent\\": ["tests/src/Login/"]
+    }
+  },
   "require-dev": {
     "phpunit/phpunit": "^5.7"
   }

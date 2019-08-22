@@ -1,56 +1,64 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wallaxe
- * Date: 21/08/2019
- * Time: 23:19
- */
 
-namespace Tests\LoginMemoryPersistent\Application;
+namespace TestsLoginMemoryPersistent\Application;
 
 use LoginMemoryPersistent\Application\CheckLogin;
-use LoginMemoryPersistent\Application\CreateUser;
-use LoginMemoryPersistent\Infraestructure\Persistence\Memory\UserRepository;
+use LoginMemoryPersistent\Domain\Exceptions\ErrorLoginException;
+use LoginMemoryPersistent\Domain\Exceptions\UnavailableUserException;
+use LoginMemoryPersistent\Domain\Repository\UserSearchRepositoryInterface;
+use TestsLoginMemoryPersistent\Shared\GenerateUser;
 
 class CheckLoginTest extends \PHPUnit_Framework_TestCase
 {
+
+    protected $userSearchRepository;
+
+    public function setUp()
+    {
+        parent::setUp(); // TODO: Change the auto generated stub
+        $this->userSearchRepository = $this
+            ->getMockBuilder(UserSearchRepositoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
     public function testCheckCorrectLogin()
     {
-        $userRepository = new UserRepository();
-        $createUserUseCase = new CreateUser($userRepository);
-        $checkUserUseCase = new CheckLogin($userRepository);
+        $checkUserUseCase = new CheckLogin($this->userSearchRepository);
+        $returnUser = GenerateUser::getUser('user','password');
 
-        $createUserUseCase->addUser('user1','password');
-        $createUserUseCase->addUser('user2','password');
-        $createUserUseCase->addUser('user3','password');
+        $this->userSearchRepository
+            ->expects($this->once())
+            ->method('findByUsername')
+            ->will($this->returnValue($returnUser));
 
-        $this->assertTrue($checkUserUseCase->isValidLogin('user2','password'));
+        $this->assertTrue($checkUserUseCase->tryLogin('user','password'));
     }
 
-    public function testUserUnavailableOnCheckLogin()
+    public function testUnavailableUserOnCheckLogin()
     {
-        $userRepository = new UserRepository();
-        $createUserUseCase = new CreateUser($userRepository);
-        $checkUserUseCase = new CheckLogin($userRepository);
+        $checkUserUseCase = new CheckLogin($this->userSearchRepository);
 
-        $createUserUseCase->addUser('user1','password');
-        $createUserUseCase->addUser('user2','password');
-        $createUserUseCase->addUser('user3','password');
+        $this->userSearchRepository
+            ->expects($this->once())
+            ->method('findByUsername')
+            ->will($this->returnValue(null));
 
-        $this->expectException('LoginMemoryPersistent\Domain\Exceptions\UnavailableUserException');
-        $this->assertTrue($checkUserUseCase->isValidLogin('userUnavailable','password'));
+        $this->expectException(UnavailableUserException::class);
+        $checkUserUseCase->tryLogin('incorrectUser', 'password');
     }
 
-    public function testCheckNotCorrectLogin()
+    public function testErrorLoginOnCheckLogin()
     {
-        $userRepository = new UserRepository();
-        $createUserUseCase = new CreateUser($userRepository);
-        $checkUserUseCase = new CheckLogin($userRepository);
+        $checkUserUseCase = new CheckLogin($this->userSearchRepository);
+        $returnUser = GenerateUser::getUser('user','password');
 
-        $createUserUseCase->addUser('user1','password');
-        $createUserUseCase->addUser('user2','password');
-        $createUserUseCase->addUser('user3','password');
+        $this->userSearchRepository
+            ->expects($this->once())
+            ->method('findByUsername')
+            ->will($this->returnValue($returnUser));
 
-        $this->assertFalse($checkUserUseCase->isValidLogin('user2','incorrectPassword'));
+        $this->expectException(ErrorLoginException::class);
+        $this->assertFalse($checkUserUseCase->tryLogin('user','incorrectPassword'));
     }
 }

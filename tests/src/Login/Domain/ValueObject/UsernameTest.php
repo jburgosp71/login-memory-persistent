@@ -1,14 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wallaxe
- * Date: 21/08/2019
- * Time: 19:02
- */
+
+namespace TestsLoginMemoryPersistent\Application;
 
 use LoginMemoryPersistent\Domain\ValueObject\Username;
 
-class UsernameValueObjectTest extends PHPUnit_Framework_TestCase
+class UsernameTest extends \PHPUnit_Framework_TestCase
 {
     public function testEquals()
     {

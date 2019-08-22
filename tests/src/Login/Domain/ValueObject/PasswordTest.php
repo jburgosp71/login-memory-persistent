@@ -1,8 +1,10 @@
 <?php
 
+namespace TestsLoginMemoryPersistent\Application;
+
 use LoginMemoryPersistent\Domain\ValueObject\Password;
 
-class PasswordValueObjectTest extends PHPUnit_Framework_TestCase
+class PasswordTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testEquals()

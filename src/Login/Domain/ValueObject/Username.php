@@ -1,12 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wallaxe
- * Date: 21/08/2019
- * Time: 17:02
- */
 
 namespace LoginMemoryPersistent\Domain\ValueObject;
+
+use SebastianBergmann\GlobalState\Exception;
 
 class Username
 {
@@ -14,26 +10,38 @@ class Username
 
     /**
      * Username constructor.
-     * @param $username
+     * @param String $username
      */
-    public function __construct($username)
+    public function __construct(String $username)
     {
         $this->isValidUsername($username);
 
-        $this->username = $username;
+        $this->username = strtolower($username);
     }
 
-    private function isValidUsername($username)
+    /**
+     * @param String $username
+     * @return bool|Exception
+     */
+    private function isValidUsername(String $username) : bool
     {
         // Todo: add validators, return Exception when is not valid
+        return true;
     }
 
-    public function equals(Username $username)
+    /**
+     * @param Username $username
+     * @return bool
+     */
+    public function equals(Username $username) : bool
     {
         return $this === $username;
     }
 
-    public function __toString()
+    /**
+     * @return String
+     */
+    public function __toString() : String
     {
         return $this->username;
     }
