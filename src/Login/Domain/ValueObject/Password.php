@@ -31,15 +31,6 @@ class Password
     }
 
     /**
-     * @param String $password
-     * @return bool
-     */
-    public function isCorrectPassword(String $password) : bool
-    {
-        return password_verify($password, $this->getHashedPassword());
-    }
-
-    /**
      * @return string
      */
     private function getHashedPassword() : String

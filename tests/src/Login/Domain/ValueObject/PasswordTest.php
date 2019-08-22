@@ -15,11 +15,4 @@ class PasswordTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($passwordTestA->equals($passwordTestA));
         $this->assertFalse($passwordTestA->equals($passwordTestB));
     }
-
-    public function testIsCorrectPassword()
-    {
-        $passwordTest = new Password('password');
-        $this->assertTrue($passwordTest->isCorrectPassword('password'));
-        $this->assertFalse($passwordTest->isCorrectPassword('incorrectPassword'));
-    }
 }
