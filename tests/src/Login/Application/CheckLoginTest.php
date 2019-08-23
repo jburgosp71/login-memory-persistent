@@ -6,12 +6,12 @@ use LoginMemoryPersistent\Application\CheckLogin;
 use LoginMemoryPersistent\Domain\Exceptions\ErrorLoginException;
 use LoginMemoryPersistent\Domain\Exceptions\UnavailableUserException;
 use LoginMemoryPersistent\Domain\Repository\UserSearchRepositoryInterface;
-use TestsLoginMemoryPersistent\Shared\GenerateUser;
+use LoginMemoryPersistent\Domain\Service\LoginService;
 
 class CheckLoginTest extends \PHPUnit_Framework_TestCase
 {
-
     protected $userSearchRepository;
+    protected $loginService;
 
     public function setUp()
     {
@@ -20,45 +20,48 @@ class CheckLoginTest extends \PHPUnit_Framework_TestCase
             ->getMockBuilder(UserSearchRepositoryInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
+
+        $this->loginService = $this
+            ->getMockBuilder(LoginService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 
     public function testCheckCorrectLogin()
     {
-        $checkUserUseCase = new CheckLogin($this->userSearchRepository);
-        $returnUser = GenerateUser::getUser('user','password');
+        $checkLoginUseCase = new CheckLogin($this->loginService);
 
-        $this->userSearchRepository
+        $this->loginService
             ->expects($this->once())
-            ->method('findByUsername')
-            ->will($this->returnValue($returnUser));
+            ->method('tryLogin')
+            ->will($this->returnValue(true));
 
-        $this->assertTrue($checkUserUseCase->tryLogin('user','password'));
+        $this->assertTrue($checkLoginUseCase->run('user','password'));
     }
 
     public function testUnavailableUserOnCheckLogin()
     {
-        $checkUserUseCase = new CheckLogin($this->userSearchRepository);
+        $checkLoginUseCase = new CheckLogin($this->loginService);
 
-        $this->userSearchRepository
+        $this->loginService
             ->expects($this->once())
-            ->method('findByUsername')
-            ->will($this->returnValue(null));
+            ->method('tryLogin')
+            ->will($this->throwException(new UnavailableUserException()));
 
         $this->expectException(UnavailableUserException::class);
-        $checkUserUseCase->tryLogin('incorrectUser', 'password');
+        $checkLoginUseCase->run('incorrectUser', 'password');
     }
 
     public function testErrorLoginOnCheckLogin()
     {
-        $checkUserUseCase = new CheckLogin($this->userSearchRepository);
-        $returnUser = GenerateUser::getUser('user','password');
+        $checkLoginUseCase = new CheckLogin($this->loginService);
 
-        $this->userSearchRepository
+        $this->loginService
             ->expects($this->once())
-            ->method('findByUsername')
-            ->will($this->returnValue($returnUser));
+            ->method('tryLogin')
+            ->will($this->throwException(new ErrorLoginException()));
 
         $this->expectException(ErrorLoginException::class);
-        $this->assertFalse($checkUserUseCase->tryLogin('user','incorrectPassword'));
+        $this->assertFalse($checkLoginUseCase->run('user','incorrectPassword'));
     }
 }

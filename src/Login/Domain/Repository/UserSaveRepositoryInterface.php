@@ -7,4 +7,5 @@ use LoginMemoryPersistent\Domain\Entity\User;
 interface UserSaveRepositoryInterface
 {
     public function save(User $user);
+    public function update(User $user);
 }

@@ -25,6 +25,7 @@ class CreateUserTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
     }
+
     public function testCreateCorrectlyUser() {
         $createUserUseCase = new CreateUser($this->userSaveRepository);
 

@@ -4,6 +4,7 @@ namespace LoginMemoryPersistent\Infraestructure\Persistence\Memory;
 
 use LoginMemoryPersistent\Domain\Entity\User;
 use LoginMemoryPersistent\Domain\Exceptions\DuplicatedUserException;
+use LoginMemoryPersistent\Domain\Exceptions\UnavailableUserException;
 use LoginMemoryPersistent\Domain\Repository\UserSaveRepositoryInterface;
 use LoginMemoryPersistent\Domain\Repository\UserSearchRepositoryInterface;
 use LoginMemoryPersistent\Domain\ValueObject\Password;
@@ -27,9 +28,21 @@ class UserRepository implements UserSaveRepositoryInterface, UserSearchRepositor
      */
     public function save(User $user)
     {
-
         if ($this->findByUsername($user->getUsername()) instanceof User) {
             throw new DuplicatedUserException();
+        }
+
+        $this->userArray[$user->getUsername()] = $user->getPassword();
+    }
+
+    /**
+     * @param User $user
+     * @throws UnavailableUserException
+     */
+    public function update(User $user)
+    {
+        if (!$this->findByUsername($user->getUsername()) instanceof User) {
+            throw new UnavailableUserException();
         }
 
         $this->userArray[$user->getUsername()] = $user->getPassword();

@@ -2,22 +2,21 @@
 
 namespace LoginMemoryPersistent\Application;
 
-use LoginMemoryPersistent\Domain\Entity\User;
 use LoginMemoryPersistent\Domain\Exceptions\ErrorLoginException;
 use LoginMemoryPersistent\Domain\Exceptions\UnavailableUserException;
-use LoginMemoryPersistent\Domain\Repository\UserSearchRepositoryInterface;
+use LoginMemoryPersistent\Domain\Service\LoginService;
 
 class CheckLogin
 {
-    protected $userSearchRepository;
+    protected $loginService;
 
     /**
      * CheckLogin constructor.
-     * @param UserSearchRepositoryInterface $userSearchRepository
+     * @param LoginService $loginService
      */
-    public function __construct(UserSearchRepositoryInterface $userSearchRepository)
+    public function __construct(LoginService $loginService)
     {
-        $this->userSearchRepository = $userSearchRepository;
+        $this->loginService = $loginService;
     }
 
     /**
@@ -27,20 +26,8 @@ class CheckLogin
      * @throws ErrorLoginException
      * @throws UnavailableUserException
      */
-    public function tryLogin(String $username, String $password) : bool
+    public function run(String $username, String $password) : bool
     {
-        $user = $this->userSearchRepository->findByUsername($username);
-        if (!$user instanceof User) {
-            throw new UnavailableUserException();
-        }
-
-        $passwordHashed = $user->getPassword();
-
-        if (!password_verify($password, $passwordHashed))
-        {
-            throw new ErrorLoginException();
-        }
-
-        return true;
+        return $this->loginService->tryLogin($username, $password);
     }
 }
