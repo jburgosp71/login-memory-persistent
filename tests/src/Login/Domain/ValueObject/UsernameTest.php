@@ -6,7 +6,7 @@ use LoginMemoryPersistent\Domain\ValueObject\Username;
 
 class UsernameTest extends \PHPUnit_Framework_TestCase
 {
-    public function testEquals()
+    public function testEqualsUsername()
     {
         $usernameTestA = new Username('username');
         $usernameTestB = new Username('username');

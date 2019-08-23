@@ -7,7 +7,7 @@ use LoginMemoryPersistent\Domain\ValueObject\Password;
 class PasswordTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testEquals()
+    public function testEqualsPassword()
     {
         $passwordTestA = new Password('password');
         $passwordTestB = new Password('password');

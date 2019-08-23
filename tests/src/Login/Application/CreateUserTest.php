@@ -26,7 +26,7 @@ class CreateUserTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    public function testCreateCorrectlyUser() {
+    public function testCorrectCreateUser() {
         $createUserUseCase = new CreateUser($this->userSaveRepository);
 
         $this->userSaveRepository
@@ -36,7 +36,7 @@ class CreateUserTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($createUserUseCase->addUser('user','password'));
     }
 
-    public function testDuplicatedUserCreation() {
+    public function testDuplicatedUserOnCreateUser() {
         $createUserUseCase = new CreateUser($this->userSaveRepository);
 
         $this->userSaveRepository
