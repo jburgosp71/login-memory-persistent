@@ -31,3 +31,11 @@ de dichos objetos, o que carácteres son aceptados, por poner algún ejemplo.
 - Se han realizado la mayoría de test unitarios como para poder quitar el código y en base a estos desarrollar las funcionalidades necesarias para que el sistema funcione. 
 
 Pendiente, el caso de uso para cambiar el password (UserUpdateRepository), mejorar la implementación de los valueObjects y sus tests, y seguro que más cosas que siempre se pueden mejorar ...
+
+- Docker:
+Se incluye Dockerfile para poder montar una imagen test y poder realizar los tests desde la maquina generada:
+docker build --no-cache --pull -t "login-memory-persistent-docker" .
+docker run -it login-memory-persistent-docker vendor/bin/phpunit -c tests/phpunit.xml.dist --tap
+
+También disponible en DockerHub: jburgosp71/login-memory-persistent-docker
+docker push jburgosp71/login-memory-persistent-docker

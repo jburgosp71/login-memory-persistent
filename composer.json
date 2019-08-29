@@ -1,5 +1,5 @@
 {
-  "name" : "login-memory-persistent",
+  "name" : "login-memory-persistent/login",
   "autoload": {
     "psr-4": {
       "LoginMemoryPersistent\\": ["src/Login/"]

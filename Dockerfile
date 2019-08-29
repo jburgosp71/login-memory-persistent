@@ -6,7 +6,6 @@ RUN composer install \
     --ignore-platform-reqs \
     --no-ansi \
     --no-autoloader \
-    --dev \
     --no-interaction \
     --no-scripts
 
